@@ -1,43 +1,55 @@
 package com.ali.server.cache.controller
 
+import com.ali.server.cache.model.Resource
 import com.ali.server.cache.service.ResourceService
 import org.springframework.http.ETag
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@RequestMapping("/api/resource")
 class ResourceController(
-    val resourceService: ResourceService
+    private val resourceService: ResourceService
 ) {
 
-    @GetMapping("/resource/{nameSpace}/{id}")
+    @GetMapping("/{nameSpace}/{id}")
     fun getResource(
         @PathVariable nameSpace: String,
-        @PathVariable id: Int,
-        @RequestHeader(name = "if-none-match", required = false) ifNoneMatch: ETag
-    ): ResponseEntity<*> {
-        TODO()
+        @PathVariable id: String,
+        @RequestHeader(name = "if-none-match", required = false) ifNoneMatch: ETag,
+    ): ResponseEntity<Any> {
+        val resource = resourceService.getResource(nameSpace, id, ifNoneMatch)
+        //if (ifNoneMatch == ETag.create(resource.toString()))
+        return ResponseEntity.ok(resource)
     }
 
-    @PostMapping("/resource/{nameSpace}/{id}")
-    fun createResource(@PathVariable nameSpace: String, @PathVariable id: Int): ResponseEntity<*> {
-        TODO()
+    @GetMapping("/{nameSpace}")
+    fun getResources(@PathVariable nameSpace: String, @RequestParam ids: List<String>): ResponseEntity<*> {
+        val resources = resourceService.getManyResourcesInNameSpace(ids)
+        return ResponseEntity.ok(resources)
     }
 
-    @PutMapping("/resource/{nameSpace}/{id}")
-    fun updateResource(@PathVariable nameSpace: String, @PathVariable id: Int): ResponseEntity<*> {
-        TODO()
+    @PostMapping("/{nameSpace}/{id}")
+    fun putResource(
+        @PathVariable nameSpace: String, @PathVariable id: String, @RequestBody resource: Resource
+    ): ResponseEntity<Unit> {
+        resourceService.putResource(nameSpace, id, resource);
+        return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
-    @DeleteMapping("/resource/{nameSpace}/{id}")
-    fun deleteMapping(@PathVariable nameSpace: String, @PathVariable id: Int): ResponseEntity<*> {
-        TODO()
+    @DeleteMapping("/{nameSpace}/{id}")
+    fun deleteResource(@PathVariable nameSpace: String, @PathVariable id: String): ResponseEntity<Unit> {
+        resourceService.deleteResource(nameSpace, id)
+        return ResponseEntity.noContent().build()
     }
 
 }
