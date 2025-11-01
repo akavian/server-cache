@@ -3,8 +3,11 @@ package com.ali.server.cache.service.impl
 import com.ali.server.cache.model.Resource
 import com.ali.server.cache.service.ResourceService
 import org.springframework.http.ETag
+import org.springframework.stereotype.Service
 
+@Service(ResourceService.CACHED_SERVICE)
 class CacheResourceService: ResourceService {
+
     override fun getResource(
         nameSpace: String,
         id: String,
