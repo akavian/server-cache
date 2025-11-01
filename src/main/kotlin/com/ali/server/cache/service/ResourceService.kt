@@ -4,6 +4,12 @@ import com.ali.server.cache.model.Resource
 import org.springframework.http.ETag
 
 interface ResourceService {
+
+    companion object {
+        const val CACHED_SERVICE = "cached"
+        const val DIRECT_SERVICE = "direct"
+    }
+
     fun getResource(nameSpace: String, id: String, eTag: ETag?): Resource
     fun getManyResourcesInNameSpace(ids: List<String>)
     fun putResource(nameSpace: String, id: String, resource: Resource)
