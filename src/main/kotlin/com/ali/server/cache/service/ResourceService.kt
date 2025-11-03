@@ -1,7 +1,6 @@
 package com.ali.server.cache.service
 
 import com.ali.server.cache.model.Resource
-import org.springframework.http.ETag
 
 interface ResourceService {
 
@@ -10,8 +9,8 @@ interface ResourceService {
         const val DIRECT_SERVICE = "direct"
     }
 
-    fun getResource(nameSpace: String, id: String, eTag: ETag?): Resource
-    fun getManyResourcesInNameSpace(ids: List<String>)
+    fun getResource(nameSpace: String, id: String): Resource
+    fun getManyResourcesInNameSpace(ids: List<String>): List<Resource>
     fun putResource(nameSpace: String, id: String, resource: Resource)
     fun deleteResource(nameSpace: String, id: String)
 }

@@ -2,21 +2,16 @@ package com.ali.server.cache.service.impl
 
 import com.ali.server.cache.model.Resource
 import com.ali.server.cache.service.ResourceService
-import org.springframework.http.ETag
 import org.springframework.stereotype.Service
 
 @Service(ResourceService.CACHED_SERVICE)
-class CacheResourceService: ResourceService {
+class CacheResourceService : ResourceService {
 
-    override fun getResource(
-        nameSpace: String,
-        id: String,
-        eTag: ETag?
-    ): Resource {
+    override fun getResource(nameSpace: String, id: String): Resource {
         TODO("Not yet implemented")
     }
 
-    override fun getManyResourcesInNameSpace(ids: List<String>) {
+    override fun getManyResourcesInNameSpace(ids: List<String>): List<Resource> {
         TODO("Not yet implemented")
     }
 
