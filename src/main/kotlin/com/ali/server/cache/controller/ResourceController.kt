@@ -1,8 +1,8 @@
 package com.ali.server.cache.controller
 
+import com.ali.server.cache.helper.ETagCalculator
 import com.ali.server.cache.model.Resource
 import com.ali.server.cache.service.ResourceService
-import org.springframework.http.ETag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -18,31 +18,39 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/resource")
 class ResourceController(
-    private val resourceService: ResourceService
+    private val resourceService: ResourceService,
+    private val eTagCalculator: ETagCalculator
 ) {
 
     @GetMapping("/{nameSpace}/{id}")
     fun getResource(
         @PathVariable nameSpace: String,
         @PathVariable id: String,
-        @RequestHeader(name = "if-none-match", required = false) ifNoneMatch: ETag,
-    ): ResponseEntity<Any> {
-        val resource = resourceService.getResource(nameSpace, id, ifNoneMatch)
-        //if (ifNoneMatch == ETag.create(resource.toString()))
+        @RequestHeader(name = "if-none-match", required = false) ifNoneMatch: String?,
+    ): ResponseEntity<Any?> {
+        val resource = resourceService.getResource(nameSpace, id)
+        if (ifNoneMatch != null) {
+            val clientETags = ifNoneMatch.split(",")
+                .map { it.trim().removePrefix("W/").removePrefix("w/") }
+            val resourceETag = eTagCalculator.eTagOf(resource)
+            if (resourceETag in clientETags) {
+                return ResponseEntity.status(HttpStatus.NOT_MODIFIED).eTag(resourceETag).build();
+            }
+        }
         return ResponseEntity.ok(resource)
     }
 
     @GetMapping("/{nameSpace}")
-    fun getResources(@PathVariable nameSpace: String, @RequestParam ids: List<String>): ResponseEntity<*> {
+    fun getResources(@PathVariable nameSpace: String, @RequestParam ids: List<String>): ResponseEntity<Any?> {
         val resources = resourceService.getManyResourcesInNameSpace(ids)
         return ResponseEntity.ok(resources)
     }
 
     @PostMapping("/{nameSpace}/{id}")
     fun putResource(
-        @PathVariable nameSpace: String, @PathVariable id: String, @RequestBody resource: Resource
+        @PathVariable nameSpace: String, @PathVariable id: String, @RequestBody() resource: Resource
     ): ResponseEntity<Unit> {
-        resourceService.putResource(nameSpace, id, resource);
+        resourceService.putResource(nameSpace, id, resource)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
