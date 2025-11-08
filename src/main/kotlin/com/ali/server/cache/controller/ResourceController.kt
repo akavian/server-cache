@@ -47,10 +47,9 @@ class ResourceController(
     }
 
     @PostMapping("/{nameSpace}/{id}")
-    fun putResource(
-        @PathVariable nameSpace: String, @PathVariable id: String, @RequestBody() resource: Resource
+    fun putResource(@RequestBody resource: Resource
     ): ResponseEntity<Unit> {
-        resourceService.putResource(nameSpace, id, resource)
+        resourceService.putResource(resource)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
