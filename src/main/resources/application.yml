@@ -1,3 +1,7 @@
 spring:
   application:
     name: server-cache
+
+cache:
+  expire-after-write: 1000
+  initial-capacity: 1000
