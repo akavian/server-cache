@@ -1,29 +1,30 @@
 package com.ali.server.cache.service.impl
 
+import com.ali.server.cache.exception.ResourceNotFoundException
 import com.ali.server.cache.model.Resource
+import com.ali.server.cache.repository.ResourceRepository
 import com.ali.server.cache.service.ResourceService
 import org.springframework.stereotype.Service
 
 @Service(ResourceService.DIRECT_SERVICE)
-class DirectResourceService : ResourceService {
+class DirectResourceService(val resourceRepository: ResourceRepository) : ResourceService {
     override fun getResource(nameSpace: String, id: String): Resource {
-        TODO("Not yet implemented")
+        return resourceRepository.findById(Resource.getKey(nameSpace, id))
+            .orElseThrow { ResourceNotFoundException(Resource.getKey(nameSpace, id)) }
     }
 
-
     override fun getManyResourcesInNameSpace(ids: List<String>): List<Resource> {
-        TODO("Not yet implemented")
+        return resourceRepository.findAllById(ids)
     }
 
     override fun putResource(
-        nameSpace: String,
-        id: String,
         resource: Resource
     ) {
-        TODO("Not yet implemented")
+        resourceRepository.save(resource)
     }
 
     override fun deleteResource(nameSpace: String, id: String) {
-        TODO("Not yet implemented")
+        resourceRepository.deleteById(Resource.getKey(nameSpace, id))
     }
+
 }

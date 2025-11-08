@@ -23,11 +23,7 @@ class DelegatingResourceService(val services: StrategyMap, val requestPreference
 
     override fun getManyResourcesInNameSpace(ids: List<String>) = pick().getManyResourcesInNameSpace(ids)
 
-    override fun putResource(
-        nameSpace: String,
-        id: String,
-        resource: Resource
-    ) = pick().putResource(nameSpace, id, resource)
+    override fun putResource(resource: Resource) = pick().putResource(resource)
 
     override fun deleteResource(nameSpace: String, id: String) = pick().deleteResource(nameSpace, id)
 
