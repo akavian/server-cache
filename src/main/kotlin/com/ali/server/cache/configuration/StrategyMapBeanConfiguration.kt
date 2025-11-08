@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class BeanConfiguration {
+class StrategyMapBeanConfiguration {
 
     @Bean
     fun strategyMap(beans: Map<String, ResourceService>): StrategyMap = mapOf(
@@ -19,5 +19,4 @@ class BeanConfiguration {
             ResourceStrategy.DIRECT
         ))
     )
-
 }
