@@ -11,6 +11,6 @@ interface ResourceService {
 
     fun getResource(nameSpace: String, id: String): Resource
     fun getManyResourcesInNameSpace(ids: List<String>): List<Resource>
-    fun putResource(nameSpace: String, id: String, resource: Resource)
+    fun putResource(resource: Resource)
     fun deleteResource(nameSpace: String, id: String)
 }
