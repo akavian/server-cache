@@ -4,9 +4,9 @@ services:
     image: 'mongo:latest'
     container_name: 'server-cache-mongo'
     environment:
-      MONGO_INITDB_DATABASE: ${MONGODB_DB}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_USER}
-      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_PASS}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_PASS}
     ports:
       - '27017:27017'
     volumes:
@@ -25,12 +25,12 @@ services:
       mongodb:
         condition: service_healthy
     environment:
-      MONGODB_HOST: ${MONGODB_HOST}
-      MONGODB_PORT: ${MONGODB_PORT}
-      MONGODB_USERNAME: ${MONGODB_APP_USER}
-      MONGODB_PASSWORD: ${MONGODB_APP_PASS}
-      MONGODB_DATABASE: ${MONGODB_DB}
-      MONGODB_AUTHDB: ${MONGODB_AUTHDB}
+      MONGO_HOST: ${MONGO_HOST}
+      MONGO_PORT: ${MONGO_PORT}
+      MONGO_USERNAME: ${MONGO_APP_USER}
+      MONGO_PASSWORD: ${MONGO_APP_PASS}
+      MONGO_DATABASE: ${MONGO_DB}
+      MONGO_AUTH_DB: ${MONGO_AUTH_DB}
 
   volumes:
     db-data:
