@@ -1,9 +1,36 @@
 services:
+
   mongodb:
     image: 'mongo:latest'
+    container_name: 'server-cache-mongo'
     environment:
-      - 'MONGO_INITDB_DATABASE=mydatabase'
-      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
-      - 'MONGO_INITDB_ROOT_USERNAME=root'
+      MONGO_INITDB_DATABASE: ${MONGODB_DB}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_USER}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_PASS}
     ports:
-      - '27017'
+      - '27017:27017'
+    volumes:
+      - db-data:/data/db
+      - ./create-user.js:/docker-entrypoint-initdb.d/create-user.js:ro
+
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      MONGODB_HOST: ${MONGODB_HOST}
+      MONGODB_PORT: ${MONGODB_PORT}
+      MONGODB_USERNAME: ${MONGODB_APP_USER}
+      MONGODB_PASSWORD: ${MONGODB_APP_PASS}
+      MONGODB_DATABASE: ${MONGODB_DB}
+      MONGODB_AUTHDB: ${MONGODB_AUTHDB}
+
+  volumes:
+    db-data:
