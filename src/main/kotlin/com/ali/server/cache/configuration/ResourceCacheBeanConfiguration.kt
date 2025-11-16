@@ -20,7 +20,7 @@ class ResourceCacheBeanConfiguration(val resourceCacheProperties: ResourceCacheP
         Caffeine.newBuilder()
             .expireAfterWrite(resourceCacheProperties.expireAfterWrite, TimeUnit.SECONDS)
             .initialCapacity(resourceCacheProperties.initialCapacity)
-            .build<String, Resource> {
+            .build {
                 resourceRepository.findById(it).orElseThrow { ResourceNotFoundException(it) }
             }
 }

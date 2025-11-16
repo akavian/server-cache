@@ -1,6 +1,6 @@
 package com.ali.server.cache.helper
 
-import com.ali.server.cache.model.Resource
+import com.ali.server.cache.model.ResourceResponse
 import org.springframework.stereotype.Component
 import java.security.MessageDigest
 import java.util.Base64
@@ -13,8 +13,12 @@ class ETagCalculator {
 
     private val encoder = Base64.getUrlEncoder().withoutPadding();
 
-    fun eTagOf(resource: Resource): String {
-        val eTagFormat = "${resource.nameSpace}:${resource.id}:${resource.version}:${resource.updatedAt.toEpochMilli()}"
+    fun eTagOf(resourceResponse: ResourceResponse): String {
+        val eTagFormat =
+            """${resourceResponse.nameSpace}
+                |:${resourceResponse.id}
+                |:${resourceResponse.version}
+                |:${resourceResponse.updatedAt.toEpochMilli()}""".trimMargin()
         val hash = MessageDigest.getInstance(SHA_256).digest(eTagFormat.toByteArray())
         return "\"${encoder.encodeToString(hash)}\""
     }
