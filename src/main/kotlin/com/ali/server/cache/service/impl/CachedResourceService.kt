@@ -1,6 +1,9 @@
 package com.ali.server.cache.service.impl
 
 import com.ali.server.cache.model.Resource
+import com.ali.server.cache.model.ResourceRequest
+import com.ali.server.cache.model.ResourceResponse
+import com.ali.server.cache.model.toResponsePayload
 import com.ali.server.cache.service.ResourceService
 import com.github.benmanes.caffeine.cache.LoadingCache
 import org.springframework.http.HttpStatus
@@ -14,16 +17,20 @@ class CachedResourceService(val resourceCache: LoadingCache<String, Resource>) :
         private const val PUT_NOT_IMPLEMENTED = "Saving resource in cache directly is not supported"
     }
 
-    override fun getResource(nameSpace: String, id: String): Resource {
-        return resourceCache[Resource.getKey(nameSpace, id)]
+    override fun getResource(nameSpace: String, id: String): ResourceResponse {
+        return resourceCache[Resource.getKey(nameSpace, id)].toResponsePayload()
     }
 
-    override fun getManyResourcesInNameSpace(ids: List<String>): List<Resource> {
-        return resourceCache.getAll(ids).map { it.value }.toList()
+    override fun getManyResourcesInNameSpace(nameSpace: String, ids: List<String>): List<ResourceResponse> {
+        return resourceCache.getAll(ids.map { Resource.getKey(nameSpace, it) })
+            .map { it.value.toResponsePayload() }
+            .toList()
     }
 
     override fun putResource(
-        resource: Resource
+        id: String,
+        nameSpace: String,
+        resourceRequest: ResourceRequest
     ) {
         throw ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, PUT_NOT_IMPLEMENTED)
     }
