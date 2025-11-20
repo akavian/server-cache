@@ -4,7 +4,7 @@ import com.ali.server.cache.exception.ResourceNotFoundException
 import com.ali.server.cache.model.Resource
 import com.ali.server.cache.model.ResourceRequest
 import com.ali.server.cache.model.ResourceResponse
-import com.ali.server.cache.model.toResponsePayload
+import com.ali.server.cache.model.toResourceResponse
 import com.ali.server.cache.model.updateFromResourceRequest
 import com.ali.server.cache.repository.ResourceRepository
 import com.ali.server.cache.service.ResourceService
@@ -16,12 +16,13 @@ class DirectResourceService(val resourceRepository: ResourceRepository) : Resour
     override fun getResource(nameSpace: String, id: String): ResourceResponse {
         return resourceRepository.findById(Resource.getKey(nameSpace, id))
             .orElseThrow { ResourceNotFoundException(Resource.getKey(nameSpace, id)) }
-            .toResponsePayload()
+            .toResourceResponse()
     }
 
     override fun getManyResourcesInNameSpace(nameSpace: String, ids: List<String>): List<ResourceResponse> {
         return resourceRepository.findAllById(ids.map { Resource.getKey(nameSpace, it) })
-            .map { it.toResponsePayload() }
+            .also { if (it.isEmpty()) throw ResourceNotFoundException(ids.joinToString()) }
+            .map { it.toResourceResponse() }
     }
 
     override fun putResource(
