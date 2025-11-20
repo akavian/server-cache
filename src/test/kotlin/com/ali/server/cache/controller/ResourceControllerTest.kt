@@ -2,7 +2,7 @@ package com.ali.server.cache.controller
 
 import com.ali.server.cache.helper.ETagCalculator
 import com.ali.server.cache.model.Resource
-import com.ali.server.cache.model.toResponsePayload
+import com.ali.server.cache.model.toResourceResponse
 import com.ali.server.cache.service.ResourceService
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -45,23 +45,23 @@ class ResourceControllerTest(val mockMvc: MockMvc) {
 
     @Test
     fun `when requested resource exist with no eTag then return the resource`() {
-        whenever(resourceService.getResource(any(), any())).thenReturn(resource.toResponsePayload())
+        whenever(resourceService.getResource(any(), any())).thenReturn(resource.toResourceResponse())
 
         mockMvc.get("/api/resource/test/xyz").andExpect {
-                status { isOk() }
-                jsonPath("$.id") { value("xyz") }
-                jsonPath("$.nameSpace") { value("test") }
-                jsonPath("$.content.subject") { value("hello") }
-                jsonPath("$.content.task") { value("learn kotlin") }
-            }
+            status { isOk() }
+            jsonPath("$.id") { value("xyz") }
+            jsonPath("$.nameSpace") { value("test") }
+            jsonPath("$.content.subject") { value("hello") }
+            jsonPath("$.content.task") { value("learn kotlin") }
+        }
     }
 
     @Test
     fun `when requested resource exist with matching eTag then return nothing`() {
         whenever(resourceService.getResource(any(), any()))
-            .thenReturn(resource.toResponsePayload())
+            .thenReturn(resource.toResourceResponse())
 
-        val eTag = eTagCalculator.eTagOf(resource.toResponsePayload())
+        val eTag = eTagCalculator.eTagOf(resource.toResourceResponse())
 
         mockMvc.get("/api/resource/test/xyz") {
             headers { set("if-none-match", eTag) }
@@ -81,7 +81,7 @@ class ResourceControllerTest(val mockMvc: MockMvc) {
     }
 
     @Test
-    fun `when resource is null then error must be thrown`() {
+    fun `when resource request is null then error must be thrown`() {
 
         mockMvc.put("/api/resource/test/new") {
             content = null
@@ -96,7 +96,7 @@ class ResourceControllerTest(val mockMvc: MockMvc) {
 
         whenever(
             resourceService.getManyResourcesInNameSpace(any(), any())
-        ).thenReturn(listOf(resource.toResponsePayload()))
+        ).thenReturn(listOf(resource.toResourceResponse()))
 
         mockMvc.get("/api/resource/test?ids=xyz").andExpect {
             status { isOk() }
@@ -124,8 +124,8 @@ class ResourceControllerTest(val mockMvc: MockMvc) {
     @Test
     fun `when deletion of resource requested then return no content`() {
         mockMvc.delete("/api/resource/test/xyz").andExpect {
-                status { isNoContent() }
-            }
+            status { isNoContent() }
+        }
     }
 }
 
