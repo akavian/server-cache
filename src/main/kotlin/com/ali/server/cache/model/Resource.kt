@@ -7,7 +7,6 @@ import org.springframework.data.annotation.Version
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
-import java.util.Optional
 
 @Document("resources")
 data class Resource(
@@ -35,7 +34,7 @@ data class Resource(
     }
 }
 
-fun Resource.toResponsePayload(): ResourceResponse =
+fun Resource.toResourceResponse(): ResourceResponse =
     ResourceResponse(this.id, this.nameSpace, this.content, this.version, this.updatedAt ?: Instant.now())
 
 fun Resource.updateFromResourceRequest(resourceRequest: ResourceRequest): Resource = let {
