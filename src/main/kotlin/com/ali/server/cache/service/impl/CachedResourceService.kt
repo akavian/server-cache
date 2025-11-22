@@ -11,10 +11,11 @@ import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 
 @Service(ResourceService.CACHED_SERVICE)
-class CachedResourceService(val resourceCache: LoadingCache<String, Resource>) : ResourceService {
+class CachedResourceService(private val resourceCache: LoadingCache<String, Resource>) : ResourceService {
 
     companion object {
         private const val PUT_NOT_IMPLEMENTED = "Saving resource in cache directly is not supported"
+        private const val DELETE_NOT_IMPLEMENTED = "Deleting resource in cache directly is not supported"
     }
 
     override fun getResource(nameSpace: String, id: String): ResourceResponse {
@@ -36,6 +37,6 @@ class CachedResourceService(val resourceCache: LoadingCache<String, Resource>) :
     }
 
     override fun deleteResource(nameSpace: String, id: String) {
-        resourceCache.invalidate(Resource.getKey(nameSpace, id))
+        throw ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, DELETE_NOT_IMPLEMENTED)
     }
 }
