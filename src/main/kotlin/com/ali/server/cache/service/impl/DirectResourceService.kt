@@ -1,5 +1,7 @@
 package com.ali.server.cache.service.impl
 
+import com.ali.server.cache.event.DeleteResourceEvent
+import com.ali.server.cache.event.UpdateResourceEvent
 import com.ali.server.cache.exception.ResourceNotFoundException
 import com.ali.server.cache.model.Resource
 import com.ali.server.cache.model.ResourceRequest
@@ -8,11 +10,16 @@ import com.ali.server.cache.model.toResourceResponse
 import com.ali.server.cache.model.updateFromResourceRequest
 import com.ali.server.cache.repository.ResourceRepository
 import com.ali.server.cache.service.ResourceService
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import kotlin.jvm.optionals.getOrNull
 
 @Service(ResourceService.DIRECT_SERVICE)
-class DirectResourceService(val resourceRepository: ResourceRepository) : ResourceService {
+class DirectResourceService(
+    private val resourceRepository: ResourceRepository,
+    private val publisher: ApplicationEventPublisher
+) : ResourceService {
+
     override fun getResource(nameSpace: String, id: String): ResourceResponse {
         return resourceRepository.findById(Resource.getKey(nameSpace, id))
             .orElseThrow { ResourceNotFoundException(Resource.getKey(nameSpace, id)) }
@@ -35,10 +42,13 @@ class DirectResourceService(val resourceRepository: ResourceRepository) : Resour
             resourceRepository.findById(key).getOrNull()?.updateFromResourceRequest(resourceRequest)
                 ?: Resource.fromResourceRequest(id, nameSpace, resourceRequest)
         resourceRepository.save(resource)
+        publisher.publishEvent(UpdateResourceEvent(key))
     }
 
     override fun deleteResource(nameSpace: String, id: String) {
-        resourceRepository.deleteById(Resource.getKey(nameSpace, id))
+        val key = Resource.getKey(nameSpace, id)
+        resourceRepository.deleteById(key)
+        publisher.publishEvent(DeleteResourceEvent(key))
     }
 
 }
