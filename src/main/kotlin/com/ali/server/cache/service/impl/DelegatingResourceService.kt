@@ -10,7 +10,10 @@ import org.springframework.stereotype.Service
 
 @Service
 @Primary
-class DelegatingResourceService(val services: StrategyMap, val requestPreference: RequestPreference) : ResourceService {
+class DelegatingResourceService(
+    private val services: StrategyMap,
+    private val requestPreference: RequestPreference
+) : ResourceService {
 
     private fun pick(): ResourceService {
         val strategy = if (requestPreference.isBypassRequested) ResourceStrategy.DIRECT else ResourceStrategy.CACHED
