@@ -1,7 +1,9 @@
 package com.ali.server.cache.service.impl
 
+import com.ali.server.cache.event.UpdateResourceEvent
 import com.ali.server.cache.exception.ResourceNotFoundException
 import com.ali.server.cache.model.Resource
+import com.ali.server.cache.model.ResourceRequest
 import com.ali.server.cache.model.toResourceResponse
 import com.ali.server.cache.repository.ResourceRepository
 import org.junit.jupiter.api.assertNotNull
@@ -11,7 +13,10 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.springframework.context.ApplicationEventPublisher
 import java.time.Instant
 import java.util.Optional
 import kotlin.test.Test
@@ -21,6 +26,9 @@ class DirectResourceServiceTest {
 
     @Mock
     lateinit var resourceRepository: ResourceRepository
+
+    @Mock
+    lateinit var publisher: ApplicationEventPublisher
 
     @InjectMocks
     lateinit var directResourceService: DirectResourceService
@@ -45,12 +53,15 @@ class DirectResourceServiceTest {
 
         assertNotNull(resourcePayload)
         assert(resourcePayload == resource.toResourceResponse())
+        verify(publisher, times(0)).publishEvent(any())
+
     }
 
     @Test
     fun `when resource is not found should throw not found exception`() {
         whenever(resourceRepository.findById(any())).thenReturn(Optional.empty())
         assertThrows<ResourceNotFoundException> { directResourceService.getResource("ns", "id") }
+        verify(publisher, times(0)).publishEvent(any())
     }
 
     @Test
@@ -60,5 +71,33 @@ class DirectResourceServiceTest {
         val resourcePayloads = directResourceService.getManyResourcesInNameSpace("ns", listOf("id"))
         assert(resourcePayloads.size == 1)
         assert(resourcePayloads.first() == resource.toResourceResponse())
+        verify(publisher, times(0)).publishEvent(any())
     }
+
+    @Test
+    fun `when update-create requested for the existing resource, then save the resource and publish message`() {
+        whenever(resourceRepository.findById(any())).thenReturn(Optional.of(resource))
+
+        directResourceService.putResource(
+            "id",
+            "ns",
+            resource.toResourceRequest()
+        )
+
+        verify(resourceRepository, times(1)).findById(any())
+        verify(resourceRepository, times(1)).save(any())
+        verify(publisher, times(1)).publishEvent(any<UpdateResourceEvent>())
+    }
+
+    @Test
+    fun `when update-create request for non-existing resource, then save the resource and publish message`() {
+
+        directResourceService.putResource("id", "ns", resource.toResourceRequest())
+        verify(resourceRepository, times(1)).findById(any())
+        verify(resourceRepository, times(1)).save(any())
+        verify(publisher).publishEvent(any<UpdateResourceEvent>())
+    }
+
+    private fun Resource.toResourceRequest() = ResourceRequest(this.content, this.version)
+
 }
