@@ -78,7 +78,6 @@ class DelegatingResourceServiceTest {
         verify(cachedStrategyService).putResource(any(),any(), any())
     }
 
-
     @Test
     fun `when deleteResource requested with direct strategy, then verify direct strategy is picked`() {
         whenever(requestPreference.isBypassRequested).thenReturn(true)
