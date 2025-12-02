@@ -7,7 +7,7 @@ import org.springframework.web.context.WebApplicationContext.SCOPE_REQUEST
 
 @Component
 @Scope(SCOPE_REQUEST)
-class RequestPreference(request: HttpServletRequest) {
+class RequestPreference(private val request: HttpServletRequest) {
     companion object {
         private const val CACHE_CONTROL = "Cache-Control"
         private const val PRAGMA = "Pragma"
