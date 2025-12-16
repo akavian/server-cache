@@ -25,7 +25,7 @@ data class Resource(
 ) {
     @get:Id
     val key: String
-        get() = "$nameSpace;$id"
+        get() = "$nameSpace:$id"
 
     companion object {
         fun getKey(ns: String, id: String) = "$ns:$id"
