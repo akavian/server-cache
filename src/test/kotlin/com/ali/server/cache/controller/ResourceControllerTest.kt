@@ -23,7 +23,6 @@ import java.time.Instant
 import kotlin.test.Test
 
 @WebMvcTest(ResourceController::class)
-@AutoConfigureMockMvc
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @Import(ETagCalculator::class)
 class ResourceControllerTest(val mockMvc: MockMvc) {
