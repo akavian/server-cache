@@ -8,7 +8,9 @@ import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.mongodb.MongoDatabaseFactory
 import org.springframework.data.mongodb.config.EnableMongoAuditing
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory
 
 @Configuration
 @EnableMongoAuditing
@@ -17,9 +19,9 @@ class MongoBeanConfiguration(val mongoProperties: MongoProperties) {
     @Bean
     fun mongoBean(): MongoClient {
         val credential = MongoCredential.createCredential(
-            mongoProperties.appUser,
+            mongoProperties.username,
             mongoProperties.authDB,
-            mongoProperties.appPass
+            mongoProperties.password.toCharArray()
         )
 
         val mongoClientSettings = MongoClientSettings.builder().credential(credential).applyToClusterSettings {
@@ -34,5 +36,10 @@ class MongoBeanConfiguration(val mongoProperties: MongoProperties) {
         }.build()
 
         return MongoClients.create(mongoClientSettings)
+    }
+
+    @Bean
+    fun mongoDatabaseFactory(client: MongoClient): MongoDatabaseFactory {
+        return SimpleMongoClientDatabaseFactory(client, mongoProperties.database)
     }
 }
