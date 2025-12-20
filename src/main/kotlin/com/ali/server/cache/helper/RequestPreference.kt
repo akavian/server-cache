@@ -2,11 +2,12 @@ package com.ali.server.cache.helper
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.context.annotation.Scope
+import org.springframework.context.annotation.ScopedProxyMode
 import org.springframework.stereotype.Component
 import org.springframework.web.context.WebApplicationContext.SCOPE_REQUEST
 
 @Component
-@Scope(SCOPE_REQUEST)
+@Scope(SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS )
 class RequestPreference(private val request: HttpServletRequest) {
     companion object {
         private const val CACHE_CONTROL = "Cache-Control"
