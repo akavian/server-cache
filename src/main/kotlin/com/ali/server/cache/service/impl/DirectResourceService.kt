@@ -1,5 +1,6 @@
 package com.ali.server.cache.service.impl
 
+import com.ali.server.cache.configuration.annotation.StrategyQualified
 import com.ali.server.cache.event.DeleteResourceEvent
 import com.ali.server.cache.event.UpdateResourceEvent
 import com.ali.server.cache.exception.ResourceNotFoundException
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service
 import kotlin.jvm.optionals.getOrNull
 
 @Service(ResourceService.DIRECT_SERVICE)
+@StrategyQualified
 class DirectResourceService(
     private val resourceRepository: ResourceRepository,
     private val publisher: ApplicationEventPublisher
