@@ -27,7 +27,7 @@ class ResourceController(
         @PathVariable nameSpace: String,
         @PathVariable id: String,
         @RequestHeader(name = "if-none-match", required = false) ifNoneMatch: String?,
-    ): ResponseEntity<Any?> {
+    ): ResponseEntity<Any> {
         val resource = resourceService.getResource(nameSpace, id)
         if (ifNoneMatch != null) {
             val clientETags = ifNoneMatch.split(",")
@@ -44,7 +44,7 @@ class ResourceController(
     fun getResources(
         @PathVariable(name = "nameSpace") nameSpace: String,
         @RequestParam ids: List<String>
-    ): ResponseEntity<Any?> {
+    ): ResponseEntity<Any> {
         val resources = resourceService.getManyResourcesInNameSpace(nameSpace, ids)
         return ResponseEntity.ok(resources)
     }
