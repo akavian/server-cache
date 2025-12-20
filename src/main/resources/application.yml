@@ -2,6 +2,13 @@ spring:
   application:
     name: server-cache
 
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: WARN
+    com.ali.server.cache: DEBUG
+
 cache:
   expire-after-write: ${CACHE_EXPIRE_AFTER_WRITE:1000}
   initial-capacity: ${CACHE_INITIAL_CAPACITY:1000}
