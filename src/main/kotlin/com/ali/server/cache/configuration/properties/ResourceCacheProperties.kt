@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated
 
 @Validated
 @ConfigurationProperties(prefix = "cache")
-data class ResourceCacheProperties(
+class ResourceCacheProperties(
     @field:Min(1)
     val expireAfterWrite: Long,
     @field:Min(1)
