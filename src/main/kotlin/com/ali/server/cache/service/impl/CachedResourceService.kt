@@ -1,5 +1,6 @@
 package com.ali.server.cache.service.impl
 
+import com.ali.server.cache.configuration.annotation.StrategyQualified
 import com.ali.server.cache.model.Resource
 import com.ali.server.cache.model.ResourceRequest
 import com.ali.server.cache.model.ResourceResponse
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 
 @Service(ResourceService.CACHED_SERVICE)
+@StrategyQualified
 class CachedResourceService(private val resourceCache: LoadingCache<String, Resource>) : ResourceService {
 
     companion object {
