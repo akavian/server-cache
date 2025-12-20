@@ -27,10 +27,14 @@ services:
     environment:
       MONGO_HOST: ${MONGO_HOST}
       MONGO_PORT: ${MONGO_PORT}
-      MONGO_USERNAME: ${MONGO_APP_USER}
-      MONGO_PASSWORD: ${MONGO_APP_PASS}
-      MONGO_DATABASE: ${MONGO_DB}
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DATABASE: ${MONGO_DATABASE}
       MONGO_AUTH_DB: ${MONGO_AUTH_DB}
+      MONGO_MAX_POOL_SIZE: ${MONGO_MAX_POOL_SIZE}
+      MONGO_MIN_POOL_SIZE: ${MONGO_MIN_POOL_SIZE}
+    ports:
+      - "8080:8080"
 
-  volumes:
-    db-data:
+volumes:
+  db-data:
