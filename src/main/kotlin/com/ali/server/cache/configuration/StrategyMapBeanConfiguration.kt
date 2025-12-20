@@ -1,5 +1,6 @@
 package com.ali.server.cache.configuration
 
+import com.ali.server.cache.configuration.annotation.StrategyQualified
 import com.ali.server.cache.enums.ResourceStrategy
 import com.ali.server.cache.enums.StrategyMap
 import com.ali.server.cache.exception.StrategyNotFoundException
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.Configuration
 class StrategyMapBeanConfiguration {
 
     @Bean
-    fun strategyMap(beans: Map<String, ResourceService>): StrategyMap = mapOf(
+    fun strategyMap(@StrategyQualified beans: Map<String, ResourceService>): StrategyMap = mapOf(
         ResourceStrategy.CACHED to (beans[ResourceService.DIRECT_SERVICE] ?: throw StrategyNotFoundException(
             ResourceStrategy.CACHED
         )),
