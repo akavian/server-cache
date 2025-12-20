@@ -1,1 +1,1 @@
-rootProject.name = "server.cache"
+rootProject.name = "server-cache"
