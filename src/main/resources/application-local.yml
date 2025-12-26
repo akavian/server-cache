@@ -1,0 +1,9 @@
+spring:
+  docker:
+    compose:
+      enabled: true
+      services: mongodb
+
+mongo:
+  host: 'localhost'
+  port: 27017
