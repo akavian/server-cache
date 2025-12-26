@@ -4,10 +4,12 @@ import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Profile
 import org.springframework.validation.annotation.Validated
 
 @Validated
 @ConfigurationProperties(prefix = "mongo")
+@Profile("!test")
  class MongoProperties(
     @field:NotBlank
     val host: String,

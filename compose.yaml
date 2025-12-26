@@ -1,12 +1,16 @@
 services:
 
   mongodb:
-    image: 'mongo:latest'
+    image: 'mongo:8.2.2'
     container_name: 'server-cache-mongo'
     environment:
       MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_USER}
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_PASS}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASS}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_AUTH_DB: ${MONGO_AUTH_DB}
+      MONGO_USERNAME: ${MONGO_USERNAME}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+
     ports:
       - '27017:27017'
     volumes:
@@ -20,11 +24,14 @@ services:
       retries: 5
 
   app:
+    profiles: ["full"]
     build: .
     depends_on:
       mongodb:
         condition: service_healthy
+    container_name: "server-cache-app"
     environment:
+      SPRING_PROFILES_ACTIVE: docker
       MONGO_HOST: ${MONGO_HOST}
       MONGO_PORT: ${MONGO_PORT}
       MONGO_USERNAME: ${MONGO_USERNAME}
