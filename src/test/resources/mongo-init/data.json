@@ -1,7 +1,7 @@
 [
   {
-    "key": "nameSpace1:id1",
-    "id": "id1",
+    "_id": "nameSpace1:id1",
+    "docId": "id1",
     "nameSpace": "nameSpace1",
     "content": {
       "text": "hello world!"
@@ -11,8 +11,8 @@
     "version": 1
   },
   {
-    "key": "nameSpace2:id2",
-    "id": "id2",
+    "_id": "nameSpace2:id2",
+    "docId": "id2",
     "nameSpace": "nameSpace2",
     "content": {
       "text": "Tadaaaaa!"
@@ -22,8 +22,8 @@
     "version": 1
   },
   {
-    "key": "nameSpace3:id3",
-    "id": "id3",
+    "_id": "nameSpace3:id3",
+    "docId": "id3",
     "nameSpace": "nameSpace3",
     "content": {
       "text": "Boo Hoo!"
