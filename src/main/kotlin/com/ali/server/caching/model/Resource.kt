@@ -9,9 +9,11 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
 
 @Document("resources")
-data class Resource(
+class Resource private constructor(
 
-    @Indexed(name = "idx_id") val id: String,
+    @Id val key: String,
+
+    @Indexed(name = "idx_id") val docId: String,
 
     @Indexed(name = "idx_namespace") val nameSpace: String,
 
@@ -23,19 +25,25 @@ data class Resource(
 
     @Version var version: Long? = null
 ) {
-    @get:Id
-    val key: String
-        get() = "$nameSpace:$id"
-
     companion object {
         fun getKey(ns: String, id: String) = "$ns:$id"
-        fun fromResourceRequest(id: String, nameSpace: String, resourceRequest: ResourceRequest): Resource =
-            Resource(id, nameSpace, resourceRequest.content, version = resourceRequest.version)
+        fun create(
+            docId: String,
+            nameSpace: String,
+            content: Map<String, Any?>,
+            createdAt: Instant? = null,
+            updatedAt: Instant? = null,
+            version: Long? = null
+        ) =
+            Resource("$nameSpace:$docId", docId, nameSpace, content, createdAt, updatedAt, version)
+
+        fun fromResourceRequest(docId: String, nameSpace: String, resourceRequest: ResourceRequest): Resource =
+            Resource("$nameSpace:$docId", docId, nameSpace, resourceRequest.content, version = resourceRequest.version)
     }
 }
 
 fun Resource.toResourceResponse(): ResourceResponse =
-    ResourceResponse(this.id, this.nameSpace, this.content, this.version, this.updatedAt ?: Instant.now())
+    ResourceResponse(this.docId, this.nameSpace, this.content, this.version, this.updatedAt ?: Instant.now())
 
 fun Resource.updateFromResourceRequest(resourceRequest: ResourceRequest): Resource = let {
     it.content = resourceRequest.content
