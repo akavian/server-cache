@@ -29,7 +29,7 @@ internal class ResourceControllerTest() {
     @MockitoSpyBean
     lateinit var eTagCalculator: ETagCalculator
 
-    private val resource = Resource(
+    private val resource = Resource.create(
         "xyz", "test", mapOf(
             "subject" to "hello",
             "task" to "learn kotlin",

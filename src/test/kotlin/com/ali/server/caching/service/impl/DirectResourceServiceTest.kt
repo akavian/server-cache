@@ -34,7 +34,7 @@ class DirectResourceServiceTest {
     lateinit var directResourceService: DirectResourceService
 
     private val resource =
-        Resource(
+        Resource.create(
             "id",
             "ns",
             mapOf("hello" to "world"),

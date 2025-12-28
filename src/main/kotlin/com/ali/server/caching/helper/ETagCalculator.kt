@@ -16,7 +16,7 @@ class ETagCalculator {
     fun eTagOf(resourceResponse: ResourceResponse): String {
         val eTagFormat =
             """${resourceResponse.nameSpace}
-                |:${resourceResponse.id}
+                |:${resourceResponse.docId}
                 |:${resourceResponse.version}
                 |:${resourceResponse.updatedAt.toEpochMilli()}""".trimMargin()
         val hash = MessageDigest.getInstance(SHA_256).digest(eTagFormat.toByteArray())

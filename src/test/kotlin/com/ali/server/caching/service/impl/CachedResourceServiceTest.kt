@@ -27,7 +27,7 @@ class CachedResourceServiceTest {
 
     private val resourceRequest = ResourceRequest(mapOf("hello" to "world"), 0)
 
-    private val resource = Resource(
+    private val resource = Resource.create(
         "id",
         "ns",
         mapOf("hello" to "world"),
@@ -48,7 +48,7 @@ class CachedResourceServiceTest {
     fun `when resource get as many is requested then return the existing resources`() {
         whenever(resourceCache.getAll(any()))
             .thenReturn(mapOf(Pair(resource.key, resource)))
-        val resourceResponses = cachedResourceService.getManyResourcesInNameSpace(resource.nameSpace, listOf(resource.id))
+        val resourceResponses = cachedResourceService.getManyResourcesInNameSpace(resource.nameSpace, listOf(resource.docId))
 
         assert(resourceResponses.size == 1)
         assert(resourceResponses[0] == resource.toResourceResponse() )
