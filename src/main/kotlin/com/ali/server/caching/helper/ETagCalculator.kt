@@ -11,7 +11,7 @@ class ETagCalculator {
         private const val SHA_256 = "SHA-256"
     }
 
-    private val encoder = Base64.getUrlEncoder().withoutPadding();
+    private val encoder = Base64.getUrlEncoder().withoutPadding()
 
     fun eTagOf(resourceResponse: ResourceResponse): String {
         val eTagFormat =

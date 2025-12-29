@@ -30,7 +30,7 @@ internal abstract class AbstractIntegrationTest {
         val mongoDBContainer = MongoDBContainer("mongo:8.2.2")
             .withClasspathResourceMapping(
                 HOST_PATH,
-                "/docker-entrypoint-initdb.d",
+                CONTAINER_PATH,
                 BindMode.READ_ONLY
             )
     }
@@ -39,7 +39,7 @@ internal abstract class AbstractIntegrationTest {
     protected lateinit var client: RestTestClient
 
     @BeforeAll
-    fun seedMongo(): Unit {
+    fun seedMongo() {
         mongoDBContainer.execInContainer(
             "bash", "-lc",
             """
