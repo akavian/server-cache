@@ -13,10 +13,10 @@ class StrategyMapBeanConfiguration {
 
     @Bean
     fun strategyMap(@StrategyQualified beans: Map<String, ResourceService>): StrategyMap = mapOf(
-        ResourceStrategy.CACHED to (beans[ResourceService.DIRECT_SERVICE] ?: throw StrategyNotFoundException(
+        ResourceStrategy.CACHED to (beans[ResourceService.CACHED_SERVICE] ?: throw StrategyNotFoundException(
             ResourceStrategy.CACHED
         )),
-        ResourceStrategy.DIRECT to (beans[ResourceService.CACHED_SERVICE] ?: throw StrategyNotFoundException(
+        ResourceStrategy.DIRECT to (beans[ResourceService.DIRECT_SERVICE] ?: throw StrategyNotFoundException(
             ResourceStrategy.DIRECT
         ))
     )
