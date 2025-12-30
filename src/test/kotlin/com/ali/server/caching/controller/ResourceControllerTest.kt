@@ -46,12 +46,10 @@ internal class ResourceControllerTest() {
     fun `when requested resource exist with no eTag then return the resource`() {
         whenever(resourceService.getResource(any(), any())).thenReturn(resource.toResourceResponse())
 
-        client
-
         client.get().uri("/api/resource/test/xyz").exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("$.id").isEqualTo("xyz")
+            .jsonPath("$.docId").isEqualTo("xyz")
             .jsonPath("$.nameSpace").isEqualTo("test")
             .jsonPath("$.content.subject").isEqualTo("hello")
             .jsonPath("$.content.task").isEqualTo("learn kotlin")
