@@ -20,7 +20,7 @@ internal class ResourceIntegrationTest : AbstractIntegrationTest() {
     private lateinit var eTagCalculator: ETagCalculator
 
     @Test
-    fun `when an existing resource requested, then return the resource`() {
+    fun `when an existing resource requested, then return the resource with cache`() {
         val docId = "id1"
         val nameSpace = "nameSpace1"
 
@@ -36,7 +36,7 @@ internal class ResourceIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `when an existing resource requested with the same existing etag, return not modified`() {
+    fun `when an existing resource requested with the same existing eTag, return not modified with cache`() {
         val docId = "id1"
         val nameSpace = "nameSpace1"
 
@@ -53,7 +53,7 @@ internal class ResourceIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `when multiple existing resources requested, then return the resources`() {
+    fun `when multiple existing resources requested, then return the resources with cache`() {
         val docIds = listOf("id1", "id2")
         val nameSpace = "nameSpace1"
 
@@ -80,7 +80,7 @@ internal class ResourceIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `when multiple non-existing resources requested, then return empty list`() {
+    fun `when multiple non-existing resources requested, then return empty list with cache`() {
         val docIds = listOf("id5", "id6")
         val nameSpace = "nameSpace1"
 
@@ -102,7 +102,7 @@ internal class ResourceIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `when multiple existing and non-existing resources requested, then return a list of existing ones`() {
+    fun `when multiple existing and non-existing resources requested, then return a list of existing ones with cache`() {
         val docIds = listOf("id1", "id6")
         val nameSpace = "nameSpace1"
 
