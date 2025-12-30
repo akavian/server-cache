@@ -30,7 +30,6 @@ class DirectResourceService(
 
     override fun getManyResourcesInNameSpace(nameSpace: String, ids: List<String>): List<ResourceResponse> {
         return resourceRepository.findAllById(ids.map { Resource.getKey(nameSpace, it) })
-            .also { if (it.isEmpty()) throw ResourceNotFoundException() }
             .map { it.toResourceResponse() }
     }
 
