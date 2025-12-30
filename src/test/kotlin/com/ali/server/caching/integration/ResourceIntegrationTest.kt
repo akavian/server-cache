@@ -100,4 +100,27 @@ internal class ResourceIntegrationTest : AbstractIntegrationTest() {
                 assertThat(body).isNotEmpty()
             }
     }
+
+    @Test
+    fun `when multiple existing and non-existing resources requested, then return a of existing ones list`() {
+        val docIds = listOf("id1", "id6")
+        val nameSpace = "nameSpace1"
+
+        client.get().uri {
+            it.host(domain)
+                .port(port)
+                .path("api/resource/")
+                .pathSegment("{nameSpace}")
+                .queryParam("ids", docIds.joinToString(","))
+                .build(nameSpace)
+        }.exchange()
+            .expectStatus()
+            .isOk
+            .expectBody(object : ParameterizedTypeReference<List<ResourceResponse>>() {})
+            .consumeWith {
+                val body = it.responseBody
+                assertThat(body).isNotEmpty()
+                assertThat(body).hasSize(1)
+            }
+    }
 }
