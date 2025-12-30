@@ -1,4 +1,4 @@
- package com.ali.server.caching.integration
+package com.ali.server.caching.integration
 
 
 import com.ali.server.caching.helper.ETagCalculator
@@ -6,6 +6,8 @@ import com.ali.server.caching.model.ResourceResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.test.web.reactive.server.expectBodyList
 import org.testcontainers.shaded.com.google.common.net.HttpHeaders
 import kotlin.test.Test
 
@@ -40,7 +42,8 @@ internal class ResourceIntegrationTest : AbstractIntegrationTest() {
         val nameSpace = "nameSpace1"
 
         val responseBody = client.get().uri(
-            "http://{domain}:{port}/api/resource/{nameSpace}/{docId}", domain, port, nameSpace, docId
+            "http://{domain}:{port}/api/resource/{nameSpace}/{docId}",
+            domain, port, nameSpace, docId
         ).exchange().expectBody(ResourceResponse::class.java).returnResult().responseBody
             ?: error("Response body is null")
 
@@ -48,5 +51,30 @@ internal class ResourceIntegrationTest : AbstractIntegrationTest() {
         client.get().uri("http://{domain}:{port}/api/resource/{nameSpace}/{docId}", domain, port, nameSpace, docId)
             .header(HttpHeaders.IF_NONE_MATCH, eTag)
             .exchange().expectStatus().isNotModified
+    }
+
+    @Test
+    fun `when multiple existing resources requested, then return the resources`() {
+        val docIds = listOf("id1", "id2")
+        val nameSpace = "nameSpace1"
+
+        client.get()
+            .uri {
+                it.host(domain)
+                    .port(port)
+                    .path("api/resource/")
+                    .pathSegment("{nameSpace}")
+                    .queryParam("ids",
+                        docIds.joinToString(","))
+                    .build(nameSpace)
+            }
+            .exchange()
+            .expectStatus()
+            .isOk
+            .expectBody(object : ParameterizedTypeReference<List<ResourceResponse>>() {})
+            .consumeWith {
+                val bodyList = it.responseBody
+                assertThat(bodyList).hasSize(2)
+            }
     }
 }
