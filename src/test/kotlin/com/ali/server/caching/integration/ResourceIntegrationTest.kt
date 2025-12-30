@@ -102,7 +102,7 @@ internal class ResourceIntegrationTest : AbstractIntegrationTest() {
     }
 
     @Test
-    fun `when multiple existing and non-existing resources requested, then return a of existing ones list`() {
+    fun `when multiple existing and non-existing resources requested, then return a list of existing ones`() {
         val docIds = listOf("id1", "id6")
         val nameSpace = "nameSpace1"
 
