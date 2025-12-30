@@ -7,7 +7,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.core.ParameterizedTypeReference
-import org.springframework.test.web.reactive.server.expectBodyList
 import org.testcontainers.shaded.com.google.common.net.HttpHeaders
 import kotlin.test.Test
 
@@ -64,8 +63,10 @@ internal class ResourceIntegrationTest : AbstractIntegrationTest() {
                     .port(port)
                     .path("api/resource/")
                     .pathSegment("{nameSpace}")
-                    .queryParam("ids",
-                        docIds.joinToString(","))
+                    .queryParam(
+                        "ids",
+                        docIds.joinToString(",")
+                    )
                     .build(nameSpace)
             }
             .exchange()
@@ -75,6 +76,28 @@ internal class ResourceIntegrationTest : AbstractIntegrationTest() {
             .consumeWith {
                 val bodyList = it.responseBody
                 assertThat(bodyList).hasSize(2)
+            }
+    }
+
+    @Test
+    fun `when multiple non-existing resources requested, then return empty list`() {
+        val docIds = listOf("id5", "id6")
+        val nameSpace = "nameSpace1"
+
+        client.get().uri {
+            it.host(domain)
+                .port(port)
+                .path("api/resource/")
+                .pathSegment("{nameSpace}")
+                .queryParam("ids", docIds.joinToString(","))
+                .build(nameSpace)
+        }.exchange()
+            .expectStatus()
+            .isNotFound
+            .expectBody(String::class.java)
+            .consumeWith {
+                val body = it.responseBody
+                assertThat(body).isNotEmpty()
             }
     }
 }
