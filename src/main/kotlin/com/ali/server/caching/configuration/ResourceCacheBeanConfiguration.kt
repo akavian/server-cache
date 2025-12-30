@@ -16,11 +16,9 @@ import java.util.concurrent.TimeUnit
 class ResourceCacheBeanConfiguration(val resourceCacheProperties: ResourceCacheProperties) {
 
     @Bean
-    fun resourceCache(resourceRepository: ResourceRepository): LoadingCache<String, Resource> =
+    fun resourceCache(resourceRepository: ResourceRepository): LoadingCache<String, Resource?> =
         Caffeine.newBuilder()
             .expireAfterWrite(resourceCacheProperties.expireAfterWrite, TimeUnit.SECONDS)
             .initialCapacity(resourceCacheProperties.initialCapacity)
-            .build {
-                resourceRepository.findById(it).orElseThrow { ResourceNotFoundException(it) }
-            }
+            .build(CaffeineLoader(resourceRepository))
 }
