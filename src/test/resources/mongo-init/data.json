@@ -11,6 +11,17 @@
     "version": 1
   },
   {
+    "_id": "nameSpace1:id2",
+    "docId": "id2",
+    "nameSpace": "nameSpace1",
+    "content": {
+      "text": "hello world!"
+    },
+    "createdAt": "2024-12-10T13:49:51.141Z",
+    "updatedAt": "2024-12-10T13:49:51.141Z",
+    "version": 1
+  },
+  {
     "_id": "nameSpace2:id2",
     "docId": "id2",
     "nameSpace": "nameSpace2",
