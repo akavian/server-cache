@@ -93,11 +93,11 @@ internal class ResourceIntegrationTest : AbstractIntegrationTest() {
                 .build(nameSpace)
         }.exchange()
             .expectStatus()
-            .isNotFound
-            .expectBody(String::class.java)
+            .isOk
+            .expectBody(object : ParameterizedTypeReference<List<ResourceResponse>>() {})
             .consumeWith {
                 val body = it.responseBody
-                assertThat(body).isNotEmpty()
+                assertThat(body).isEmpty()
             }
     }
 
