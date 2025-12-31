@@ -1,6 +1,5 @@
 package com.ali.server.caching.integration
 
-
 import com.ali.server.caching.helper.ETagCalculator
 import com.ali.server.caching.model.ResourceResponse
 import org.assertj.core.api.Assertions.assertThat
