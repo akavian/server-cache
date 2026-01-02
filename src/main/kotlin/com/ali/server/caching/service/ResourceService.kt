@@ -1,5 +1,6 @@
 package com.ali.server.caching.service
 
+import com.ali.server.caching.model.ResourceQueryExample
 import com.ali.server.caching.model.ResourceRequest
 import com.ali.server.caching.model.ResourceResponse
 
@@ -14,4 +15,5 @@ interface ResourceService {
     fun getManyResourcesInNameSpace(nameSpace: String,ids: List<String>): List<ResourceResponse>
     fun putResource(id: String, nameSpace: String, resourceRequest: ResourceRequest)
     fun deleteResource(nameSpace: String, id: String)
+    fun getExamples(resourceQueryExample: ResourceQueryExample): List<ResourceResponse>
 }

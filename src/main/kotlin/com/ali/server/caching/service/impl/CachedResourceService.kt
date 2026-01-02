@@ -2,6 +2,7 @@ package com.ali.server.caching.service.impl
 
 import com.ali.server.caching.configuration.annotation.StrategyQualified
 import com.ali.server.caching.model.Resource
+import com.ali.server.caching.model.ResourceQueryExample
 import com.ali.server.caching.model.ResourceRequest
 import com.ali.server.caching.model.ResourceResponse
 import com.ali.server.caching.model.toResourceResponse
@@ -18,6 +19,7 @@ class CachedResourceService(private val resourceCache: LoadingCache<String, Reso
     companion object {
         private const val PUT_NOT_IMPLEMENTED = "Saving resource in cache directly is not supported"
         private const val DELETE_NOT_IMPLEMENTED = "Deleting resource in cache directly is not supported"
+        private const val QUERY_NOT_IMPLEMENTED = "Resource query is not supported for caching scenarios"
     }
 
     override fun getResource(nameSpace: String, id: String): ResourceResponse {
@@ -38,7 +40,10 @@ class CachedResourceService(private val resourceCache: LoadingCache<String, Reso
         throw ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, PUT_NOT_IMPLEMENTED)
     }
 
-    override fun deleteResource(nameSpace: String, id: String) {
+    override fun deleteResource(nameSpace: String, id: String) =
         throw ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, DELETE_NOT_IMPLEMENTED)
-    }
+
+    override fun getExamples(resourceQueryExample: ResourceQueryExample) =
+        throw ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, QUERY_NOT_IMPLEMENTED)
+
 }

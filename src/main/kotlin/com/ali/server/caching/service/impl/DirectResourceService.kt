@@ -5,6 +5,7 @@ import com.ali.server.caching.event.DeleteResourceEvent
 import com.ali.server.caching.event.UpdateResourceEvent
 import com.ali.server.caching.exception.ResourceNotFoundException
 import com.ali.server.caching.model.Resource
+import com.ali.server.caching.model.ResourceQueryExample
 import com.ali.server.caching.model.ResourceRequest
 import com.ali.server.caching.model.ResourceResponse
 import com.ali.server.caching.model.toResourceResponse
@@ -12,6 +13,8 @@ import com.ali.server.caching.model.updateFromResourceRequest
 import com.ali.server.caching.repository.ResourceRepository
 import com.ali.server.caching.service.ResourceService
 import org.springframework.context.ApplicationEventPublisher
+import org.springframework.data.domain.Example
+import org.springframework.data.domain.ExampleMatcher
 import org.springframework.stereotype.Service
 import kotlin.jvm.optionals.getOrNull
 
@@ -52,4 +55,15 @@ class DirectResourceService(
         publisher.publishEvent(DeleteResourceEvent(key))
     }
 
+    override fun getExamples(resourceQueryExample: ResourceQueryExample): List<ResourceResponse> {
+        val pair = Resource.fromResourceQueryExample(resourceQueryExample)
+        val example = Example.of(
+            pair.first,
+            ExampleMatcher.matchingAll()
+                .withIgnoreCase()
+                .withIgnoreNullValues()
+                .withIgnorePaths(*pair.second.toTypedArray())
+        )
+        return resourceRepository.findAll(example).map { it.toResourceResponse() }
+    }
 }
