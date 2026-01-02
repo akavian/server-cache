@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
 
+private const val dummy = "dummy"
+
 @Document("resources")
 class Resource private constructor(
 
@@ -37,8 +39,29 @@ class Resource private constructor(
         ) =
             Resource("$nameSpace:$docId", docId, nameSpace, content, createdAt, updatedAt, version)
 
-        fun fromResourceRequest(docId: String, nameSpace: String, resourceRequest: ResourceRequest): Resource =
+        fun fromResourceRequest(docId: String, nameSpace: String, resourceRequest: ResourceRequest) =
             Resource("$nameSpace:$docId", docId, nameSpace, resourceRequest.content, version = resourceRequest.version)
+
+        fun fromResourceQueryExample(resourceQueryExample: ResourceQueryExample): Pair<Resource, List<String>> {
+
+            val ignoredPaths = buildList {
+                addAll(listOf("createdAt", "updatedAt", "content"))
+                if (resourceQueryExample.docId == null && resourceQueryExample.nameSpace == null) add("key")
+                if (resourceQueryExample.docId == null) add("docId")
+                if (resourceQueryExample.nameSpace == null) add("nameSpace")
+                if (resourceQueryExample.version == null) add("version")
+            }
+
+            return Pair(
+                create(
+                    resourceQueryExample.docId ?: dummy,
+                    resourceQueryExample.nameSpace ?: dummy,
+                    mapOf(),
+                    version = resourceQueryExample.version
+                ),
+                ignoredPaths
+            )
+        }
     }
 }
 
