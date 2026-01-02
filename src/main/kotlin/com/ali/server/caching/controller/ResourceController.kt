@@ -1,6 +1,7 @@
 package com.ali.server.caching.controller
 
 import com.ali.server.caching.helper.ETagCalculator
+import com.ali.server.caching.model.ResourceQueryExample
 import com.ali.server.caching.model.ResourceRequest
 import com.ali.server.caching.service.ResourceService
 import org.springframework.http.HttpHeaders
@@ -64,6 +65,11 @@ class ResourceController(
     fun deleteResource(@PathVariable nameSpace: String, @PathVariable id: String): ResponseEntity<Unit> {
         resourceService.deleteResource(nameSpace, id)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping
+    fun listResource(@RequestBody resourceQueryExample: ResourceQueryExample): ResponseEntity<Any> {
+        return ResponseEntity.ok(resourceService.getExamples(resourceQueryExample))
     }
 
 }
