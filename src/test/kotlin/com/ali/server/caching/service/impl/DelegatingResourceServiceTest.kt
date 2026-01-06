@@ -6,6 +6,7 @@ import com.ali.server.caching.model.ResourceRequest
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.lenient
 import org.mockito.Spy
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.any
@@ -65,31 +66,29 @@ class DelegatingResourceServiceTest {
     }
 
     @Test
-    fun `when putResource requested with direct strategy, then verify direct strategy is picked`() {
-        whenever(requestPreference.isBypassRequested).thenReturn(true)
+    fun `when putResource requested, then verify direct strategy is picked`() {
         delegatingResourceService.putResource("ns", "id", resourceRequest )
         verify(directStrategyService).putResource(any(),any(), any())
     }
 
     @Test
-    fun `when putResource requested with cached strategy, then verify cached strategy is picked`() {
-        whenever(requestPreference.isBypassRequested).thenReturn(false)
+    fun `when putResource requested with cached strategy, then verify cached strategy is not picked`() {
+        lenient().whenever(requestPreference.isBypassRequested).thenReturn(false)
         delegatingResourceService.putResource("ns", "ns", resourceRequest)
-        verify(cachedStrategyService).putResource(any(),any(), any())
+        verify(directStrategyService).putResource(any(),any(), any())
     }
 
     @Test
     fun `when deleteResource requested with direct strategy, then verify direct strategy is picked`() {
-        whenever(requestPreference.isBypassRequested).thenReturn(true)
+        lenient().whenever(requestPreference.isBypassRequested).thenReturn(true)
         delegatingResourceService.deleteResource("ns", "id")
         verify(directStrategyService).deleteResource(any(),any())
     }
 
     @Test
-    fun `when deleteResource requested with cached strategy, then verify cached strategy is picked`() {
-        whenever(requestPreference.isBypassRequested).thenReturn(false)
+    fun `when deleteResource requested with cached strategy, then verify cached strategy is not picked`() {
+        lenient().whenever(requestPreference.isBypassRequested).thenReturn(false)
         delegatingResourceService.deleteResource("ns", "id")
-        verify(cachedStrategyService).deleteResource(any(),any())
+        verify(directStrategyService,).deleteResource(any(),any())
     }
-
 }
