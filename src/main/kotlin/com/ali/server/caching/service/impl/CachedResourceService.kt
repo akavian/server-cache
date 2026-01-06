@@ -36,9 +36,7 @@ class CachedResourceService(private val resourceCache: LoadingCache<String, Reso
         id: String,
         nameSpace: String,
         resourceRequest: ResourceRequest
-    ) {
-        throw ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, PUT_NOT_IMPLEMENTED)
-    }
+    ) = throw ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, PUT_NOT_IMPLEMENTED)
 
     override fun deleteResource(nameSpace: String, id: String) =
         throw ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, DELETE_NOT_IMPLEMENTED)
