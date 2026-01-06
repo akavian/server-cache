@@ -16,7 +16,12 @@ class DelegatingResourceService(
     private val requestPreference: RequestPreference
 ) : ResourceService {
 
-    private fun pick(isExample: Boolean = false): ResourceService {
+    private fun pick(isExample: Boolean = false, strategy: ResourceStrategy? = null): ResourceService {
+
+        if(strategy != null) {
+            return services[strategy]!!
+        }
+
         val strategy = when {
             isExample -> ResourceStrategy.DIRECT
             requestPreference.isBypassRequested -> ResourceStrategy.DIRECT
@@ -33,12 +38,11 @@ class DelegatingResourceService(
     ) = pick().getManyResourcesInNameSpace(nameSpace, ids)
 
     override fun putResource(id: String, nameSpace: String, resourceRequest: ResourceRequest) =
-        pick().putResource(id, nameSpace, resourceRequest)
+        pick(strategy = ResourceStrategy.DIRECT).putResource(id, nameSpace, resourceRequest)
 
     override fun deleteResource(nameSpace: String, id: String) =
-        pick().deleteResource(nameSpace, id)
+        pick(strategy = ResourceStrategy.DIRECT).deleteResource(nameSpace, id)
 
     override fun getExamples(resourceQueryExample: ResourceQueryExample) =
         pick(true).getExamples(resourceQueryExample)
-
 }
