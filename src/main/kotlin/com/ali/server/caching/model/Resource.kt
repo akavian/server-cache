@@ -46,7 +46,7 @@ class Resource private constructor(
 
             val ignoredPaths = buildList {
                 addAll(listOf("createdAt", "updatedAt", "content"))
-                if (resourceQueryExample.docId == null && resourceQueryExample.nameSpace == null) add("key")
+                if (resourceQueryExample.docId == null || resourceQueryExample.nameSpace == null) add("key")
                 if (resourceQueryExample.docId == null) add("docId")
                 if (resourceQueryExample.nameSpace == null) add("nameSpace")
                 if (resourceQueryExample.version == null) add("version")
