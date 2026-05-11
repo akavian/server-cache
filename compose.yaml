@@ -9,25 +9,54 @@ services:
       MONGO_AUTH_DB: ${MONGO_AUTH_DB}
       MONGO_USERNAME: ${MONGO_USERNAME}
       MONGO_PASSWORD: ${MONGO_PASSWORD}
-
     ports:
       - '27017:27017'
     volumes:
       - db-data:/data/db
       - ./create-user.js:/docker-entrypoint-initdb.d/create-user.js:ro
-
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 })"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.1
+    command:
+      - start-dev
+      - --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEY_CLOAK_USER}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEY_CLOCK_PASS}
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/" ]
+      interval: 10s
+      retries: 10
+
+  traefik:
+    image: traefik:v3.0
+    ports:
+      - "8443:8443"
+      - "8080:8080"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    volumes:
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml
+      - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml
+      - ./certs:/certs
+
   cache-service:
     profiles: ["full"]
     build: .
     depends_on:
-      mongodb:
-        condition: service_healthy
+      - mongodb
+      - traefik
+      - keycloak
     environment:
       SPRING_PROFILES_ACTIVE: docker
       MONGO_HOST: ${MONGO_HOST}
@@ -39,7 +68,13 @@ services:
       MONGO_MAX_POOL_SIZE: ${MONGO_MAX_POOL_SIZE}
       MONGO_MIN_POOL_SIZE: ${MONGO_MIN_POOL_SIZE}
     ports:
-      - "8080:8080"
+      - "8080"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
 
 volumes:
   db-data:
