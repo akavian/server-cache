@@ -1,0 +1,27 @@
+{
+  "realm": "internal",
+  "enabled": true,
+
+  "roles": {
+    "realm": [
+      {
+        "name": "service.write"
+      }
+    ]
+  },
+
+  "clients": [
+    {
+      "clientId": "client-request",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "secret": "client-request-secret",
+
+      "defaultRoles": [
+        "service.write"
+      ]
+    }
+  ]
+}
