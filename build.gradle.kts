@@ -35,6 +35,7 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
