@@ -1,0 +1,32 @@
+tls:
+  certificates:
+    - certFile: /certs/traefik.crt
+      keyFile: /certs/traefik.key
+
+  options:
+    default:
+      clientAuth:
+        caFiles:
+          - /certs/ca.crt
+
+        clientAuthType: RequireAndVerifyClientCert
+
+http:
+
+  routers:
+    server-service-router:
+      rule: "Host(`cache.localhost`) && PathPrefix(`/cache`)"
+      service: cache-service
+      tls: {}
+
+  middlewares:
+    strip-cache:
+      stripPrefix:
+        prefixes:
+          - /cache
+
+  services:
+    cache-service:
+      loadBalancer:
+        servers:
+          - url: "http://cache-service:8080"
